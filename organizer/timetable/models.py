@@ -18,10 +18,10 @@ class TargetDate(models.Model):
 
 
 class Employee(models.Model):
-    JOB = (("Chief", "Chief"), ("Handyman", "Handyman"))
+    JOBS = (("Chief", "Chief"), ("Handyman", "Handyman"))
     employee_name = models.CharField(max_length=64)
     employee_surname = models.CharField(max_length=64)
-    job = models.CharField(max_length=8, choices=JOB)
+    job = models.CharField(max_length=8, choices=JOBS)
 
     def __str__(self):
         return self.employee_name
