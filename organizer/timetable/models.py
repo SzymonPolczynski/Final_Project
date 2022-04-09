@@ -35,6 +35,7 @@ class Reservation(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     teams = models.ManyToManyField(Team)
     target_date = models.ManyToManyField(TargetDate)
+    comments = models.TextField(null=True)
 
 
 class Comments(models.Model):
