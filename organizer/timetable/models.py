@@ -31,11 +31,17 @@ class Team(models.Model):
     employees = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
 
+class Services(models.Model):
+    service_name = models.CharField(max_length=128)
+
+
 class Reservation(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     teams = models.ManyToManyField(Team)
     target_date = models.ManyToManyField(TargetDate)
     comments = models.TextField(null=True)
+    is_accepted = models.BooleanField(default=False)
+    service_type = models.ForeignKey(Services, on_delete=models.CASCADE)
 
 
 class Comments(models.Model):
