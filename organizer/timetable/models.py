@@ -28,6 +28,7 @@ class Employee(models.Model):
 
 
 class Team(models.Model):
+    team_name = models.CharField(max_length=64)
     employees = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
 

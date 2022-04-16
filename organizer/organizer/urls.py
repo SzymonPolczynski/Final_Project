@@ -16,15 +16,27 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from timetable.views import MainPageView, AddUserView, AddEmployeeView, AddTeamView, UserDetailsView, \
-    EmployeeDetailsView
+from timetable.views import (
+    MainPageView,
+    AddUserView,
+    AddEmployeeView,
+    AddTeamView,
+    UserDetailsView,
+    EmployeeDetailsView,
+    TeamDetailsView,
+)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', MainPageView.as_view(), name="index"),
-    path('add-user/', AddUserView.as_view(), name="add-user"),
-    path('add-employee/', AddEmployeeView.as_view(), name="add-employee"),
-    path('add-team/', AddTeamView.as_view(), name="add-team"),
-    path('user/<int:user_id>/', UserDetailsView.as_view(), name="user-details"),
-    path('employee/<int:employee_id>', EmployeeDetailsView.as_view(), name="employee-details"),
+    path("admin/", admin.site.urls),
+    path("", MainPageView.as_view(), name="index"),
+    path("add-user/", AddUserView.as_view(), name="add-user"),
+    path("add-employee/", AddEmployeeView.as_view(), name="add-employee"),
+    path("add-team/", AddTeamView.as_view(), name="add-team"),
+    path("user/<int:user_id>/", UserDetailsView.as_view(), name="user-details"),
+    path(
+        "employee/<int:employee_id>",
+        EmployeeDetailsView.as_view(),
+        name="employee-details",
+    ),
+    path("team/<int:team_id>", TeamDetailsView.as_view(), name="team-details"),
 ]

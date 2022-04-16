@@ -1,5 +1,5 @@
 from django import forms
-from .models import Employee
+from .models import Employee, Team
 
 
 class AddUserForm(forms.Form):
@@ -18,6 +18,13 @@ class AddEmployeeForm(forms.Form):
     job = forms.ChoiceField(label="Funkcja", choices=Employee.JOBS)
 
 
-class AddTeamForm(forms.Form):
-    employees = forms.MultipleChoiceField(label="Dodaj pracowników do zespołu", choices=Employee.objects.all(),
-                                  widget=forms.CheckboxSelectMultiple())
+class AddTeamForm(forms.ModelForm):
+    employees = forms.ModelMultipleChoiceField(
+        label="Dodaj pracowników do zespołu",
+        queryset=Employee.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+    )
+
+    class Meta:
+        model = Team
+        fields = ("team_name",)

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 
 from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm
-from timetable.models import User, Employee
+from timetable.models import User, Employee, Team
 
 
 class MainPageView(View):
@@ -62,15 +62,28 @@ class AddEmployeeView(View):
             employee_surname = form.cleaned_data["employee_surname"]
             job = form.cleaned_data["job"]
             new_employee = Employee.objects.create(
-                employee_name=employee_name,
-                employee_surname=employee_surname,
-                job=job
+                employee_name=employee_name, employee_surname=employee_surname, job=job
             )
             return redirect(f"/employee/{new_employee.id}")
         return render(request, "create_employee.html", {"form": form})
 
 
+class TeamDetailsView(View):
+    def get(self, request, team_id):
+        ctx = {"team": get_object_or_404(Team, pk=team_id)}
+        return render(request, "team_details.html", ctx)
+
+
 class AddTeamView(View):
     def get(self, request):
         form = AddTeamForm
+        return render(request, "compose_team.html", {"form": form})
+
+    def post(self, request):
+        form = AddTeamForm(request.POST)
+        if form.is_valid():
+            team_name = form.cleaned_data["team_name"]
+            employees = form.cleaned_data["employees"]
+            new_team = Team.objects.create(team_name=team_name, employees=employees)
+            return redirect(f"/team/{new_team.id}")
         return render(request, "compose_team.html", {"form": form})
