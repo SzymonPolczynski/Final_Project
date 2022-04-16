@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
+<h2> Dane Użytkownika: </h2>
 
-</body>
-</html>
+<ul>
+    <li>
+        Imię: {{ user.user_name }}
+    </li>
+    <li>
+        Nazwisko: {{ user.user_lastname }}
+    </li>
+    <li>
+        Email: {{ user.user_email }}
+    </li>
+    <li>
+        Numer telefonu: {{ user.phone }}
+    </li>
+    <li>
+        Miasto: {{ user.city }}
+    </li>
+    <li>
+        Ulica: {{ user.street }}
+    </li>
+    <li>
+        Kod pocztowy: {{ user.postcode }}
+    </li>
+</ul>
+
+{% endblock %}

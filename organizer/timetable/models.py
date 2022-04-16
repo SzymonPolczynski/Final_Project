@@ -24,7 +24,7 @@ class Employee(models.Model):
     job = models.CharField(max_length=8, choices=JOBS)
 
     def __str__(self):
-        return self.employee_name
+        return f"{self.employee_name} {self.employee_surname}"
 
 
 class Team(models.Model):

@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
+<h2> Dane Pracownika </h2>
 
-</body>
-</html>
+<ul>
+    <li>
+        Imię: {{ employee.employee_name }}
+    </li>
+    <li>
+        Nazwisko: {{ employee.employee_surname }}
+    </li>
+    <li>
+        Stanowisko: {{ employee.job }}
+    </li>
+</ul>
+
+{% endblock %}
