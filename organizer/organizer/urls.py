@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 
 from timetable.views import (
     MainPageView,
@@ -50,11 +50,11 @@ urlpatterns = [
     path("team/<int:team_id>/", TeamDetailsView.as_view(), name="team-details"),
     path('all-users/', AllUsersView.as_view(), name="all-users"),
     path('user/delete/<int:user_id>/', DeleteUserView.as_view(), name="delete-user"),
-    path('user/modify/<int:user_id>/', ModifyUserView.as_view(), name="modify-user"),
+    path('user/modify/<int:pk>/', ModifyUserView.as_view(), name="modify-user"),
     path('all-employees/', AllEmployeesView.as_view(), name="all-employees"),
     path('employee/delete/<int:employee_id>/', DeleteEmployeeView.as_view(), name="delete-employee"),
-    path('employee/modify/<int:employee_id>/', ModifyEmployeeView.as_view(), name="modify-employee"),
+    path('employee/modify/<int:pk>/', ModifyEmployeeView.as_view(), name="modify-employee"),
     path('all-teams/', AllTeamsView.as_view(), name="all-teams"),
     path('team/delete/<int:team_id>/', DeleteTeamView.as_view(), name="delete-team"),
-    path('team/modify/<int:team_id>/', ModifyTeamView.as_view(), name="modify-team"),
+    path('team/modify/<int:pk>/', ModifyTeamView.as_view(), name="modify-team"),
 ]

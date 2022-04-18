@@ -19,7 +19,7 @@ class AddEmployeeForm(forms.Form):
 
 
 class AddTeamForm(forms.Form):
-    team_name = forms.CharField(max_length=64)
+    team_name = forms.CharField(label="Nazwa zespołu", max_length=64)
     employees = forms.ModelMultipleChoiceField(
         label="Dodaj pracowników do zespołu",
         queryset=Employee.objects.all(),

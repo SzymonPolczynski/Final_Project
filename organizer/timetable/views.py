@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, UpdateView
 
 from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm
 from timetable.models import User, Employee, Team
@@ -85,7 +85,9 @@ class AddTeamView(View):
         if form.is_valid():
             team_name = form.cleaned_data["team_name"]
             employees = form.cleaned_data["employees"]
-            new_team = Team.objects.create(team_name=team_name, employees=employees)
+            employees_set = Employee.objects.filter(pk__in=employees)
+            new_team = Team.objects.create(team_name=team_name)
+            new_team.employees.set(employees_set)
             return redirect(f"/team/{new_team.id}")
         return render(request, "compose_team.html", {"form": form})
 
@@ -105,8 +107,10 @@ class DeleteUserView(View):
         return render(request, "message.html", {"message": message})
 
 
-class ModifyUserView(View):
-    pass
+class ModifyUserView(UpdateView):
+    model = User
+    fields = ["user_name", "user_lastname", "user_email", "phone", "city", "street", "postcode"]
+    template_name = "modify_user.html"
 
 
 class AllEmployeesView(TemplateView):
@@ -124,8 +128,10 @@ class DeleteEmployeeView(View):
         return render(request, "message.html", {"message": message})
 
 
-class ModifyEmployeeView(View):
-    pass
+class ModifyEmployeeView(UpdateView):
+    model = Employee
+    fields = ["employee_name", "employee_surname", "job"]
+    template_name = "modify_employee.html"
 
 
 class AllTeamsView(TemplateView):
@@ -138,10 +144,12 @@ class AllTeamsView(TemplateView):
 class DeleteTeamView(View):
     def get(self, request, team_id):
         team = Team.objects.get(pk=team_id)
-        message = "Usunięto ekpię z bazy danych"
+        message = "Usunięto ekipę z bazy danych"
         team.delete()
         return render(request, "message.html", {"message": message})
 
 
-class ModifyTeamView(View):
-    pass
+class ModifyTeamView(UpdateView):
+    model = Team
+    fields = ["team_name", "employees"]
+    template_name = "modify_team.html"

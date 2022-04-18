@@ -3,7 +3,7 @@
 <h2> Zespół {{ team.team_name }} </h2>
 
 <ul>
-{% for employee in team.employees %}
+{% for employee in team.employees.all %}
     <li>
         {{ employee }}
     </li>

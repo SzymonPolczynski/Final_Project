@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class User(models.Model):
@@ -17,6 +18,9 @@ class User(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('user-details', kwargs={'user_id': self.pk})
+
 
 class TargetDate(models.Model):
     start_date = models.DateField()
@@ -30,13 +34,26 @@ class Employee(models.Model):
     employee_surname = models.CharField(max_length=64)
     job = models.CharField(max_length=8, choices=JOBS)
 
+    @property
+    def name(self):
+        return "{} {}".format(self.employee_name, self.employee_surname)
+
     def __str__(self):
-        return f"{self.employee_name} {self.employee_surname}"
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('employee-details', kwargs={'employee_id': self.pk})
 
 
 class Team(models.Model):
     team_name = models.CharField(max_length=64)
     employees = models.ManyToManyField(Employee)
+
+    def __str__(self):
+        return self.team_name
+
+    def get_absolute_url(self):
+        return reverse('team-details', kwargs={'team_id': self.pk})
 
 
 class Services(models.Model):

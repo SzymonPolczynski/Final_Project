@@ -7,6 +7,7 @@
   <li>{{ employee.employee_name }} {{ employee.employee_surname }}</li>
   <a href="/employee/delete/{{ employee.id }}/">usuń</a>
   <a href="/employee/modify/{{ employee.id }}/">edytuj</a>
+  <a href="/employee/{{ employee.id }}/">szczegóły</a>
   {% empty %}
     Brak pracowników w bazie danych
   {% endfor %}

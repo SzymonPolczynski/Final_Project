@@ -5,8 +5,9 @@
 <ul>
   {% for team in teams %}
   <li>{{ team.team_name }}</li>
-  <a href="/user/delete/{{ user.id }}/">usuń</a>
-  <a href="/user/modify/{{ user.id }}/">edytuj</a>
+  <a href="/team/delete/{{ team.id }}/">usuń</a>
+  <a href="/team/modify/{{ team.id }}/">edytuj</a>
+  <a href="/team/{{ team.id }}/">szczegóły</a>
   {% empty %}
     Brak ekip w bazie danych
   {% endfor %}
