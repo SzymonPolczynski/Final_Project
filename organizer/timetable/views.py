@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
+from django.views.generic import TemplateView
 
 from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm
 from timetable.models import User, Employee, Team
@@ -87,3 +88,60 @@ class AddTeamView(View):
             new_team = Team.objects.create(team_name=team_name, employees=employees)
             return redirect(f"/team/{new_team.id}")
         return render(request, "compose_team.html", {"form": form})
+
+
+class AllUsersView(TemplateView):
+    template_name = "all_users.html"
+
+    def get_context_data(self):
+        return {"users": User.objects.all()}
+
+
+class DeleteUserView(View):
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        message = "Usunięto użytkownika z bazy danych"
+        user.delete()
+        return render(request, "message.html", {"message": message})
+
+
+class ModifyUserView(View):
+    pass
+
+
+class AllEmployeesView(TemplateView):
+    template_name = "all_employees.html"
+
+    def get_context_data(self):
+        return {"employees": Employee.objects.all()}
+
+
+class DeleteEmployeeView(View):
+    def get(self, request, employee_id):
+        employee = Employee.objects.get(pk=employee_id)
+        message = "Usunięto pracownika z bazy danych"
+        employee.delete()
+        return render(request, "message.html", {"message": message})
+
+
+class ModifyEmployeeView(View):
+    pass
+
+
+class AllTeamsView(TemplateView):
+    template_name = "all_teams.html"
+
+    def get_context_data(self):
+        return {"teams": Team.objects.all()}
+
+
+class DeleteTeamView(View):
+    def get(self, request, team_id):
+        team = Team.objects.get(pk=team_id)
+        message = "Usunięto ekpię z bazy danych"
+        team.delete()
+        return render(request, "message.html", {"message": message})
+
+
+class ModifyTeamView(View):
+    pass

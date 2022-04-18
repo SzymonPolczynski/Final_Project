@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Pracownicy:</h2>
+<ul>
+  {% for employee in employees %}
+  <li>{{ employee.employee_name }} {{ employee.employee_surname }}</li>
+  <a href="/employee/delete/{{ employee.id }}/">usuń</a>
+  <a href="/employee/modify/{{ employee.id }}/">edytuj</a>
+  {% empty %}
+    Brak pracowników w bazie danych
+  {% endfor %}
+</ul>
+{% endblock %}

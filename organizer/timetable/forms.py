@@ -18,13 +18,10 @@ class AddEmployeeForm(forms.Form):
     job = forms.ChoiceField(label="Funkcja", choices=Employee.JOBS)
 
 
-class AddTeamForm(forms.ModelForm):
+class AddTeamForm(forms.Form):
+    team_name = forms.CharField(max_length=64)
     employees = forms.ModelMultipleChoiceField(
         label="Dodaj pracowników do zespołu",
         queryset=Employee.objects.all(),
         widget=forms.CheckboxSelectMultiple(),
     )
-
-    class Meta:
-        model = Team
-        fields = ("team_name",)

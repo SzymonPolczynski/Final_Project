@@ -10,6 +10,13 @@ class User(models.Model):
     street = models.CharField(max_length=128, blank=True, null=True)
     postcode = models.CharField(max_length=6, blank=True, null=True)
 
+    @property
+    def name(self):
+        return "{} {}".format(self.user_name, self.user_lastname)
+
+    def __str__(self):
+        return self.name
+
 
 class TargetDate(models.Model):
     start_date = models.DateField()
@@ -29,7 +36,7 @@ class Employee(models.Model):
 
 class Team(models.Model):
     team_name = models.CharField(max_length=64)
-    employees = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employees = models.ManyToManyField(Employee)
 
 
 class Services(models.Model):

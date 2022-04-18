@@ -24,6 +24,15 @@ from timetable.views import (
     UserDetailsView,
     EmployeeDetailsView,
     TeamDetailsView,
+    AllUsersView,
+    DeleteUserView,
+    ModifyUserView,
+    AllEmployeesView,
+    DeleteEmployeeView,
+    ModifyEmployeeView,
+    AllTeamsView,
+    DeleteTeamView,
+    ModifyTeamView,
 )
 
 urlpatterns = [
@@ -34,9 +43,18 @@ urlpatterns = [
     path("add-team/", AddTeamView.as_view(), name="add-team"),
     path("user/<int:user_id>/", UserDetailsView.as_view(), name="user-details"),
     path(
-        "employee/<int:employee_id>",
+        "employee/<int:employee_id>/",
         EmployeeDetailsView.as_view(),
         name="employee-details",
     ),
-    path("team/<int:team_id>", TeamDetailsView.as_view(), name="team-details"),
+    path("team/<int:team_id>/", TeamDetailsView.as_view(), name="team-details"),
+    path('all-users/', AllUsersView.as_view(), name="all-users"),
+    path('user/delete/<int:user_id>/', DeleteUserView.as_view(), name="delete-user"),
+    path('user/modify/<int:user_id>/', ModifyUserView.as_view(), name="modify-user"),
+    path('all-employees/', AllEmployeesView.as_view(), name="all-employees"),
+    path('employee/delete/<int:employee_id>/', DeleteEmployeeView.as_view(), name="delete-employee"),
+    path('employee/modify/<int:employee_id>/', ModifyEmployeeView.as_view(), name="modify-employee"),
+    path('all-teams/', AllTeamsView.as_view(), name="all-teams"),
+    path('team/delete/<int:team_id>/', DeleteTeamView.as_view(), name="delete-team"),
+    path('team/modify/<int:team_id>/', ModifyTeamView.as_view(), name="modify-team"),
 ]
