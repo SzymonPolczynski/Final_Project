@@ -97,7 +97,7 @@ class DeleteUserView(View):
 
 class ModifyUserView(UpdateView):
     model = User
-    fields = ["user_name", "user_lastname", "email", "phone", "city", "street", "postcode"]
+    fields = ["first_name", "last_name", "email", "phone", "city", "street", "postcode"]
     template_name = "modify_user.html"
 
 
