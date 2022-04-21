@@ -8,57 +8,77 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/add-user/">Dodaj Użytkownika</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/add-employee/">Dodaj Pracownika</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/add-team/">Stwórz Zespół</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/all-users/">Wszyscy Użytkownicy</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/all-employees/">Wszyscy Pracownicy</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/all-teams/">Wszystkie Ekipy</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/reservation/">Dodaj Rezerwacje</a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link" href="/all-reservations/">Lista Rezerwacji</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/login/">Zaloguj</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown link
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-      </ul>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/">Panel Administratora</a>
+                    </li>
+                {% endif %}
+                {% if user.is_staff %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="/add-employee/">Dodaj Pracownika</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add-team/">Stwórz Zespół</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/all-users/">Wszyscy Użytkownicy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/all-employees/">Wszyscy Pracownicy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/all-teams/">Wszystkie Ekipy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/all-reservations/">Lista Rezerwacji</a>
+                    </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/{{ user.id }}">Profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reservation/{{ user.id }}">Moje Rezerwacje</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reservation/">Dodaj Rezerwacje</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout/">Wyloguj</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add-user/">Załóż Konto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login/">Zaloguj</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown link
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>
 
 {% block content %}

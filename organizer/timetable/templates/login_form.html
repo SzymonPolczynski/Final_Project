@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <button type="submit">Zaloguj</button>
-</form>
-{% if message %}
-<ul>
-<li> {{ message }}</li>
-</ul>
-{% endif %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit">Zaloguj</button>
+    </form>
+    {% if message %}
+        <ul>
+            <li> {{ message }}</li>
+        </ul>
+    {% endif %}
 {% endblock %}

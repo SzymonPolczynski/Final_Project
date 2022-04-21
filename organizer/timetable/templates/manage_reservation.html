@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>
-Zarządzaj rezerwacją
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Zapisz">
-</form>
-</p>
+    <p>
+        Zarządzaj rezerwacją
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Zapisz">
+    </form>
+    </p>
 {% endblock %}

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>
-Zmień Dane Pracownika
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Edytuj">
-</form>
-</p>
+    <p>
+        Zmień Dane Pracownika
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Edytuj">
+    </form>
+    </p>
 {% endblock %}

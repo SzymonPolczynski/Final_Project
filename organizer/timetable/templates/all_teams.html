@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Ekipy:</h2>
-<ul>
-  {% for team in teams %}
-  <li>{{ team.team_name }}</li>
-  <a href="/team/delete/{{ team.id }}/">usuń</a>
-  <a href="/team/modify/{{ team.id }}/">edytuj</a>
-  <a href="/team/{{ team.id }}/">szczegóły</a>
-  {% empty %}
-    Brak ekip w bazie danych
-  {% endfor %}
-</ul>
+    <h2>Ekipy:</h2>
+    <ul>
+        {% for team in teams %}
+            <li>{{ team.team_name }}</li>
+            <a href="/team/delete/{{ team.id }}/">usuń</a>
+            <a href="/team/modify/{{ team.id }}/">edytuj</a>
+            <a href="/team/{{ team.id }}/">szczegóły</a>
+        {% empty %}
+            Brak ekip w bazie danych
+        {% endfor %}
+    </ul>
 {% endblock %}
