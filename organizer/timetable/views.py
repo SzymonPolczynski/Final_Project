@@ -1,9 +1,12 @@
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import TemplateView, UpdateView, FormView
 
-from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm
-from timetable.models import User, Employee, Team
+from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm, AddUserReservationForm, LoginForm
+from timetable.models import User, Employee, Team, Services, Reservation
 
 
 class MainPageView(View):
@@ -27,7 +30,7 @@ class AddUserView(View):
         if form.is_valid():
             user_name = form.cleaned_data["user_name"]
             user_lastname = form.cleaned_data["user_lastname"]
-            user_email = form.cleaned_data["user_email"]
+            user_email = form.cleaned_data["email"]
             phone = form.cleaned_data["phone"]
             city = form.cleaned_data["city"]
             street = form.cleaned_data["street"]
@@ -35,7 +38,7 @@ class AddUserView(View):
             new_user = User.objects.create(
                 user_name=user_name,
                 user_lastname=user_lastname,
-                user_email=user_email,
+                email=user_email,
                 phone=phone,
                 city=city,
                 street=street,
@@ -109,7 +112,7 @@ class DeleteUserView(View):
 
 class ModifyUserView(UpdateView):
     model = User
-    fields = ["user_name", "user_lastname", "user_email", "phone", "city", "street", "postcode"]
+    fields = ["user_name", "user_lastname", "email", "phone", "city", "street", "postcode"]
     template_name = "modify_user.html"
 
 
@@ -153,3 +156,67 @@ class ModifyTeamView(UpdateView):
     model = Team
     fields = ["team_name", "employees"]
     template_name = "modify_team.html"
+
+
+class AddUserReservationView(View):
+    def get(self, request):
+        form = AddUserReservationForm
+        return render(request, "make_reservation.html", {"form": form})
+
+    def post(self, request):
+        form = AddUserReservationForm(request.POST)
+        if form.is_valid():
+            customer = form.cleaned_data["customer"]
+            target_date = form.cleaned_data["target_date"]
+            comments = form.cleaned_data["comments"]
+            service_type = form.cleaned_data["service_type"]
+            customer_id = User.objects.get(pk=customer.id)
+            service_type_id = Services.objects.get(pk=service_type.id)
+            new_reservation = Reservation.objects.create(customer=customer_id, target_date=target_date,
+                                                         comments=comments, service_type=service_type_id)
+            return redirect(f"/reservation/{new_reservation.id}")
+        return render(request, "make_reservation.html", {"form": form})
+
+
+class UserReservationDetailsView(View):
+    def get(self, request, reservation_id):
+        ctx = {"reservation": get_object_or_404(Reservation, pk=reservation_id)}
+        return render(request, "reservation_details.html", ctx)
+
+
+class AllReservationsView(TemplateView):  # TODO tylko dla employee
+    template_name = "all_reservations.html"
+
+    def get_context_data(self):
+        return {"reservations": Reservation.objects.filter(is_accepted=False),
+                "accepted_reservations": Reservation.objects.filter(is_accepted=True)}
+
+
+class ManageReservationView(UpdateView):
+    model = Reservation
+    fields = ["customer", "teams", "target_date", "comments", "is_accepted", "service_type"]
+    template_name = "manage_reservation.html"
+
+
+class LoginView(FormView):
+    form_class = LoginForm
+    template_name = "login_form.html"
+
+    def form_valid(self, form):
+        user = authenticate(
+            username=form.cleaned_data["login"], password=form.cleaned_data["password"]
+        )
+        if user is not None:
+            login(self.request, user)
+        else:
+            return HttpResponse("Błąd logowania")
+        return redirect(reverse("index"))
+
+
+class LogoutView(View):
+    def get(self, request):
+        return render(request, "logout.html")
+
+    def post(self, request):
+        logout(request)
+        return redirect(reverse("index"))

@@ -33,6 +33,10 @@ from timetable.views import (
     AllTeamsView,
     DeleteTeamView,
     ModifyTeamView,
+    AddUserReservationView,
+    UserReservationDetailsView,
+    AllReservationsView,
+    ManageReservationView,
 )
 
 urlpatterns = [
@@ -57,4 +61,9 @@ urlpatterns = [
     path('all-teams/', AllTeamsView.as_view(), name="all-teams"),
     path('team/delete/<int:team_id>/', DeleteTeamView.as_view(), name="delete-team"),
     path('team/modify/<int:pk>/', ModifyTeamView.as_view(), name="modify-team"),
+    path('reservation/', AddUserReservationView.as_view(), name="reservation"),
+    path('reservation/<int:reservation_id>/', UserReservationDetailsView.as_view(), name="reservation-details"),
+    path('all-reservations/', AllReservationsView.as_view(), name="all-reservations"),
+    path('reservation/manage/<int:pk>/', ManageReservationView.as_view(), name="manage-reservation"),
+    # path('')
 ]

@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
+<h2> Szczegóły Rezerwacji: </h2>
+<ul>
+    <li>
+        Klient: {{ reservation.customer }}
+    </li>
+    <li>
+        Termin: {{ reservation.target_date }}
+    </li>
+    <li>
+        Komentarze: {{ reservation.comments }}
+    </li>
+    <li>
+        Typ usługi: {{ reservation.service_type }}
+    </li>
+</ul>
 
-</body>
-</html>
+{% endblock %}

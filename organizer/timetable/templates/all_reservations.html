@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Rezerwacje do zaakceptowania:</h2>
+<ul>
+  {% for reservation in reservations %}
+  <li>{{ reservation.customer }}, {{ reservation.target_date }} - {{ reservation.service_type }}</li>
+  <a href="/reservation/manage/{{ reservation.id }}/">szczegóły</a>
+  {% empty %}
+    Brak rezerwacji w bazie danych
+  {% endfor %}
+</ul>
+<h2>Rezerwacje zaakceptowane:</h2>
+<ul>
+  {% for reservation in accepted_reservations %}
+  <li>{{ reservation.customer }}, {{ reservation.target_date }} - {{ reservation.service_type }}</li>
+  <a href="/reservation/manage/{{ reservation.id }}/">szczegóły</a>
+  {% empty %}
+    Brak zaakceptowanych rezerwacji w bazie danych
+  {% endfor %}
+</ul>
+{% endblock %}

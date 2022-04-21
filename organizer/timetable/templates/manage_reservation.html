@@ -2,11 +2,11 @@
 
 {% block content %}
 <p>
-Dodaj Rezerwacje
+Zarządzaj rezerwacją
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Dodaj">
+    <input type="submit" value="Zapisz">
 </form>
 </p>
 {% endblock %}

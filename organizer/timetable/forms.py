@@ -1,5 +1,7 @@
 from django import forms
-from .models import Employee, Team
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+
+from .models import Employee, Team, Reservation, User
 
 
 class AddUserForm(forms.Form):
@@ -25,3 +27,39 @@ class AddTeamForm(forms.Form):
         queryset=Employee.objects.all(),
         widget=forms.CheckboxSelectMultiple(),
     )
+
+
+class AddUserReservationForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
+        fields = ["customer", "target_date", "comments", "service_type"]
+        widgets = {'target_date': forms.DateInput(format=('%m/%d/%Y'),
+                                                  attrs={'class': 'form-control', 'placeholder': 'Select a date',
+                                                         'type': 'date'})}
+
+
+class LoginForm(forms.Form):
+    login = forms.CharField(label="Login", max_length=64)
+    password = forms.CharField(
+        label="Password", max_length=64, widget=forms.PasswordInput
+    )
+
+
+class SignUpForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super(SignUpForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs.update({'placeholder': ('Imię')})
+        self.fields['last_name'].widget.attrs.update({'placeholder': ('Nazwisko')})
+        self.fields['email'].widget.attrs.update({'placeholder': ('Email')})
+        self.fields['password1'].widget.attrs.update({'placeholder': ('Hasło')})
+        self.fields['password2'].widget.attrs.update({'placeholder': ('Powtórz hasło')})
+
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ('email',)
