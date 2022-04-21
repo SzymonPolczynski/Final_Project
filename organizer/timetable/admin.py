@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import SignUpForm, CustomUserChangeForm
-from .models import (User,
+from .models import (CustomUser,
                      Employee,
                      Team,
                      Reservation,
@@ -13,7 +13,7 @@ from .models import (User,
 class CustomUserAdmin(UserAdmin):
     add_form = SignUpForm
     form = CustomUserChangeForm
-    model = User
+    model = CustomUser
     list_display = ('email', 'is_staff', 'is_active',)
     list_filter = ('email', 'is_staff', 'is_active',)
     fieldsets = (
@@ -30,7 +30,7 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-admin.site.register(User)
+admin.site.register(CustomUser)
 admin.site.register(Employee)
 admin.site.register(Team)
 admin.site.register(Reservation)

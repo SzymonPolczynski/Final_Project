@@ -25,7 +25,7 @@ from timetable.managers import UserManager
 #         return reverse('user-details', kwargs={'user_id': self.pk})
 
 
-class User(AbstractUser):
+class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
     phone = models.CharField(max_length=15, blank=True)
@@ -56,7 +56,7 @@ class User(AbstractUser):
 
 
 class Employee(models.Model):
-    JOBS = (("Chief", "Chief"), ("Handyman", "Handyman"))
+    JOBS = (("Chief", "Brygadzista"), ("Handyman", "Pracownik fizyczny"))
     employee_name = models.CharField(max_length=64)
     employee_surname = models.CharField(max_length=64)
     job = models.CharField(max_length=8, choices=JOBS)
@@ -91,7 +91,7 @@ class Services(models.Model):
 
 
 class Reservation(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     teams = models.ManyToManyField(Team)
     target_date = models.DateField()
     comments = models.TextField(null=True)
@@ -105,5 +105,5 @@ class Reservation(models.Model):
 class Comments(models.Model):
     subject = models.CharField(max_length=128)
     content = models.TextField()
-    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     recipient = models.ForeignKey(Employee, on_delete=models.CASCADE)

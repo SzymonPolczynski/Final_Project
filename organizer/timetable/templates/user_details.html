@@ -4,27 +4,27 @@
 
 <ul>
     <li>
-        Imię: {{ user.first_name }}
+        Imię: {{ customer.first_name }}
     </li>
     <li>
-        Nazwisko: {{ user.last_name }}
+        Nazwisko: {{ customer.last_name }}
     </li>
     <li>
-        Email: {{ user.email }}
+        Email: {{ customer.email }}
     </li>
     <li>
-        Numer telefonu: {{ user.phone }}
+        Numer telefonu: {{ customer.phone }}
     </li>
     <li>
-        Miasto: {{ user.city }}
+        Miasto: {{ customer.city }}
     </li>
     <li>
-        Ulica: {{ user.street }}
+        Ulica: {{ customer.street }}
     </li>
     <li>
-        Kod pocztowy: {{ user.postcode }}
+        Kod pocztowy: {{ customer.postcode }}
     </li>
 </ul>
-    <a href="/user/modify/{{ user.id }}/">edytuj</a>
+    <a href="/user/modify/{{ customer.id }}/">edytuj</a>
 
 {% endblock %}

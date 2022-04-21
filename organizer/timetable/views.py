@@ -1,12 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, UpdateView, FormView
 
 from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm, AddUserReservationForm, LoginForm, SignUpForm
-from timetable.models import User, Employee, Team, Services, Reservation
+from timetable.models import CustomUser, Employee, Team, Services, Reservation
+
 
 
 class MainPageView(View):
@@ -14,10 +16,14 @@ class MainPageView(View):
         return render(request, "main_page.html")
 
 
-class UserDetailsView(View):
+class UserDetailsView(LoginRequiredMixin, View):
     def get(self, request, user_id):
-        ctx = {"user": get_object_or_404(User, pk=user_id)}
-        return render(request, "user_details.html", ctx)
+        customer = CustomUser.objects.get(pk=user_id)
+        if user_id == request.user.id:
+            ctx = {"customer": customer}
+            return render(request, "user_details.html", ctx)
+        else:
+            return HttpResponseForbidden()
 
 
 class AddUserView(View):
@@ -33,13 +39,17 @@ class AddUserView(View):
         return render(request, "create_user.html", {"form": form})
 
 
-class EmployeeDetailsView(View):
+class EmployeeDetailsView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "is_staff"
+
     def get(self, request, employee_id):
         ctx = {"employee": get_object_or_404(Employee, pk=employee_id)}
         return render(request, "employee_details.html", ctx)
 
 
-class AddEmployeeView(View):
+class AddEmployeeView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "is_staff"
+
     def get(self, request):
         form = AddEmployeeForm
         return render(request, "create_employee.html", {"form": form})
@@ -57,13 +67,17 @@ class AddEmployeeView(View):
         return render(request, "create_employee.html", {"form": form})
 
 
-class TeamDetailsView(View):
+class TeamDetailsView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "is_staff"
+
     def get(self, request, team_id):
         ctx = {"team": get_object_or_404(Team, pk=team_id)}
         return render(request, "team_details.html", ctx)
 
 
-class AddTeamView(View):
+class AddTeamView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "is_staff"
+
     def get(self, request):
         form = AddTeamForm
         return render(request, "compose_team.html", {"form": form})
@@ -80,35 +94,47 @@ class AddTeamView(View):
         return render(request, "compose_team.html", {"form": form})
 
 
-class AllUsersView(TemplateView):
+class AllUsersView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = "is_staff"
     template_name = "all_users.html"
 
     def get_context_data(self):
-        return {"users": User.objects.all()}
+        return {"users": CustomUser.objects.filter(is_superuser=False)}
 
 
-class DeleteUserView(View):
+class DeleteUserView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "is_staff"
+
     def get(self, request, user_id):
-        user = User.objects.get(pk=user_id)
+        user = CustomUser.objects.get(pk=user_id)
         message = "Usunięto użytkownika z bazy danych"
         user.delete()
         return render(request, "message.html", {"message": message})
 
 
-class ModifyUserView(UpdateView):
-    model = User
+class ModifyUserView(LoginRequiredMixin, UpdateView):
+    model = CustomUser
     fields = ["first_name", "last_name", "email", "phone", "city", "street", "postcode"]
     template_name = "modify_user.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.id != self.request.user.id:
+            return redirect(obj)
+        return super(ModifyUserView, self).dispatch(request, *args, **kwargs)
 
-class AllEmployeesView(TemplateView):
+
+class AllEmployeesView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = "is_staff"
     template_name = "all_employees.html"
 
     def get_context_data(self):
         return {"employees": Employee.objects.all()}
 
 
-class DeleteEmployeeView(View):
+class DeleteEmployeeView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "is_staff"
+
     def get(self, request, employee_id):
         employee = Employee.objects.get(pk=employee_id)
         message = "Usunięto pracownika z bazy danych"
@@ -116,20 +142,24 @@ class DeleteEmployeeView(View):
         return render(request, "message.html", {"message": message})
 
 
-class ModifyEmployeeView(UpdateView):
+class ModifyEmployeeView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = "is_staff"
     model = Employee
     fields = ["employee_name", "employee_surname", "job"]
     template_name = "modify_employee.html"
 
 
-class AllTeamsView(TemplateView):
+class AllTeamsView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = "is_staff"
     template_name = "all_teams.html"
 
     def get_context_data(self):
         return {"teams": Team.objects.all()}
 
 
-class DeleteTeamView(View):
+class DeleteTeamView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "is_staff"
+
     def get(self, request, team_id):
         team = Team.objects.get(pk=team_id)
         message = "Usunięto ekipę z bazy danych"
@@ -137,13 +167,14 @@ class DeleteTeamView(View):
         return render(request, "message.html", {"message": message})
 
 
-class ModifyTeamView(UpdateView):
+class ModifyTeamView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = "is_staff"
     model = Team
     fields = ["team_name", "employees"]
     template_name = "modify_team.html"
 
 
-class AddUserReservationView(View):
+class AddUserReservationView(LoginRequiredMixin, View):
     def get(self, request):
         form = AddUserReservationForm
         return render(request, "make_reservation.html", {"form": form})
@@ -151,25 +182,21 @@ class AddUserReservationView(View):
     def post(self, request):
         form = AddUserReservationForm(request.POST)
         if form.is_valid():
-            customer = form.cleaned_data["customer"]
-            target_date = form.cleaned_data["target_date"]
-            comments = form.cleaned_data["comments"]
-            service_type = form.cleaned_data["service_type"]
-            customer_id = User.objects.get(pk=customer.id)
-            service_type_id = Services.objects.get(pk=service_type.id)
-            new_reservation = Reservation.objects.create(customer=customer_id, target_date=target_date,
-                                                         comments=comments, service_type=service_type_id)
+            new_reservation = form.save(commit=False)
+            new_reservation.customer = CustomUser.objects.get(pk=request.user.id)
+            new_reservation.save()
             return redirect(f"/reservation/{new_reservation.id}")
         return render(request, "make_reservation.html", {"form": form})
 
 
-class UserReservationDetailsView(View):
+class UserReservationDetailsView(LoginRequiredMixin, View):
     def get(self, request, reservation_id):
-        ctx = {"reservation": get_object_or_404(Reservation, pk=reservation_id)}
+        ctx = {"reservation": Reservation.objects.get(pk=reservation_id)}
         return render(request, "reservation_details.html", ctx)
 
 
-class AllReservationsView(TemplateView):  # TODO tylko dla employee
+class AllReservationsView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = "is_staff"
     template_name = "all_reservations.html"
 
     def get_context_data(self):
@@ -177,10 +204,20 @@ class AllReservationsView(TemplateView):  # TODO tylko dla employee
                 "accepted_reservations": Reservation.objects.filter(is_accepted=True)}
 
 
-class ManageReservationView(UpdateView):
+class ManageReservationView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = "is_staff"
     model = Reservation
     fields = ["customer", "teams", "target_date", "comments", "is_accepted", "service_type"]
     template_name = "manage_reservation.html"
+
+
+class AllUserReservationsView(LoginRequiredMixin, View):
+    def get(self, request, user_id):
+        user = CustomUser.objects.get(pk=user_id)
+        reservations = Reservation.objects.filter(customer=user, is_accepted=False)
+        accepted_reservations = Reservation.objects.filter(customer=user, is_accepted=True)
+        return render(request, "user_reservations_details.html", {"reservations": reservations,
+                                                                  "accepted_reservations": accepted_reservations})
 
 
 class LoginView(View):
@@ -199,7 +236,7 @@ class LoginView(View):
             if user is not None:
                 login(request, user)
                 return redirect(reverse('index'))
-            user = User.objects.filter(email=username)
+            user = CustomUser.objects.filter(email=username)
             if user:
                 message = 'Nieprawidłowy login lub hasło'
                 form = LoginForm()
@@ -212,10 +249,7 @@ class LoginView(View):
             return render(request, 'login_form.html', ctx)
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, "logout.html")
-
-    def post(self, request):
         logout(request)
         return redirect(reverse("index"))

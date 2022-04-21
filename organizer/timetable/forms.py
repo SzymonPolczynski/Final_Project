@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import Employee, Team, Reservation, User
+from .models import Employee, Team, Reservation, CustomUser
 
 
 class AddUserForm(forms.Form):
@@ -32,8 +32,8 @@ class AddTeamForm(forms.Form):
 class AddUserReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
-        fields = ["customer", "target_date", "comments", "service_type"]
-        widgets = {'target_date': forms.DateInput(format=('%m/%d/%Y'),
+        fields = ["target_date", "comments", "service_type"]
+        widgets = {'target_date': forms.DateInput(format='%m/%d/%Y',
                                                   attrs={'class': 'form-control', 'placeholder': 'Select a date',
                                                          'type': 'date'})}
 
@@ -47,21 +47,21 @@ class LoginForm(forms.Form):
 
 class SignUpForm(UserCreationForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('email', 'first_name', 'last_name', 'phone', 'city',
                   'street', 'postcode', 'password1', 'password2')
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'].widget.attrs.update({'placeholder': ('Imię')})
-        self.fields['last_name'].widget.attrs.update({'placeholder': ('Nazwisko')})
-        self.fields['email'].widget.attrs.update({'placeholder': ('Email')})
-        self.fields['phone'].widget.attrs.update({'placeholder': ('Numer telefonu')})
-        self.fields['city'].widget.attrs.update({'placeholder': ('Miasto')})
-        self.fields['street'].widget.attrs.update({'placeholder': ('Ulica')})
-        self.fields['postcode'].widget.attrs.update({'placeholder': ('Kod pocztowy')})
-        self.fields['password1'].widget.attrs.update({'placeholder': ('Hasło')})
-        self.fields['password2'].widget.attrs.update({'placeholder': ('Powtórz hasło')})
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Imię'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Nazwisko'})
+        self.fields['email'].widget.attrs.update({'placeholder': 'Email'})
+        self.fields['phone'].widget.attrs.update({'placeholder': 'Numer telefonu'})
+        self.fields['city'].widget.attrs.update({'placeholder': 'Miasto'})
+        self.fields['street'].widget.attrs.update({'placeholder': 'Ulica'})
+        self.fields['postcode'].widget.attrs.update({'placeholder': 'Kod pocztowy'})
+        self.fields['password1'].widget.attrs.update({'placeholder': 'Hasło'})
+        self.fields['password2'].widget.attrs.update({'placeholder': 'Powtórz hasło'})
         self.fields['phone'].label = "Numer telefonu"
         self.fields['city'].label = "Miasto"
         self.fields['street'].label = "Ulica"
@@ -70,5 +70,5 @@ class SignUpForm(UserCreationForm):
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('email',)
