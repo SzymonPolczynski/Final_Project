@@ -37,6 +37,7 @@ from timetable.views import (
     UserReservationDetailsView,
     AllReservationsView,
     ManageReservationView,
+    LoginView,
 )
 
 urlpatterns = [
@@ -65,5 +66,5 @@ urlpatterns = [
     path('reservation/<int:reservation_id>/', UserReservationDetailsView.as_view(), name="reservation-details"),
     path('all-reservations/', AllReservationsView.as_view(), name="all-reservations"),
     path('reservation/manage/<int:pk>/', ManageReservationView.as_view(), name="manage-reservation"),
-    # path('')
+    path('login/', LoginView.as_view(), name="login")
 ]

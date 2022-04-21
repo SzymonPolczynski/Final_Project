@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, UpdateView, FormView
 
-from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm, AddUserReservationForm, LoginForm
+from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm, AddUserReservationForm, LoginForm, SignUpForm
 from timetable.models import User, Employee, Team, Services, Reservation
 
 
@@ -22,29 +22,14 @@ class UserDetailsView(View):
 
 class AddUserView(View):
     def get(self, request):
-        form = AddUserForm
+        form = SignUpForm
         return render(request, "create_user.html", {"form": form})
 
     def post(self, request):
-        form = AddUserForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
-            user_name = form.cleaned_data["user_name"]
-            user_lastname = form.cleaned_data["user_lastname"]
-            user_email = form.cleaned_data["email"]
-            phone = form.cleaned_data["phone"]
-            city = form.cleaned_data["city"]
-            street = form.cleaned_data["street"]
-            postcode = form.cleaned_data["postcode"]
-            new_user = User.objects.create(
-                user_name=user_name,
-                user_lastname=user_lastname,
-                email=user_email,
-                phone=phone,
-                city=city,
-                street=street,
-                postcode=postcode,
-            )
-            return redirect(f"/user/{new_user.id}")
+            form.save()
+            return redirect('index')
         return render(request, "create_user.html", {"form": form})
 
 
@@ -198,19 +183,33 @@ class ManageReservationView(UpdateView):
     template_name = "manage_reservation.html"
 
 
-class LoginView(FormView):
-    form_class = LoginForm
-    template_name = "login_form.html"
+class LoginView(View):
+    def get(self, request):
+        form = LoginForm()
+        return render(request, 'login_form.html', {'form': form})
 
-    def form_valid(self, form):
-        user = authenticate(
-            username=form.cleaned_data["login"], password=form.cleaned_data["password"]
-        )
-        if user is not None:
-            login(self.request, user)
+    def post(self, request):
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            user = authenticate(email=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect(reverse('index'))
+            user = User.objects.filter(email=username)
+            if user:
+                message = 'Nieprawidłowy login lub hasło'
+                form = LoginForm()
+                ctx = {'form': form, 'message': message}
+                return render(request, 'login_form.html', ctx)
+            return redirect('/add-user/')
+
         else:
-            return HttpResponse("Błąd logowania")
-        return redirect(reverse("index"))
+            ctx = {'form': form}
+            return render(request, 'login_form.html', ctx)
 
 
 class LogoutView(View):

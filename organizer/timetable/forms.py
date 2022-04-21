@@ -7,7 +7,7 @@ from .models import Employee, Team, Reservation, User
 class AddUserForm(forms.Form):
     user_name = forms.CharField(label="Imię", max_length=64)
     user_lastname = forms.CharField(label="Nazwisko", max_length=64)
-    user_email = forms.CharField(label="Email", max_length=128)
+    email = forms.CharField(label="Email", max_length=128)
     phone = forms.IntegerField(label="Numer telefonu")
     city = forms.CharField(label="Miasto", max_length=64, required=False)
     street = forms.CharField(label="Ulica", max_length=128, required=False)
@@ -39,24 +39,33 @@ class AddUserReservationForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    login = forms.CharField(label="Login", max_length=64)
+    username = forms.EmailField(label="Adres email", max_length=64)
     password = forms.CharField(
-        label="Password", max_length=64, widget=forms.PasswordInput
+        label="Hasło", max_length=64, widget=forms.PasswordInput
     )
 
 
 class SignUpForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'password1', 'password2')
+        fields = ('email', 'first_name', 'last_name', 'phone', 'city',
+                  'street', 'postcode', 'password1', 'password2')
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs.update({'placeholder': ('Imię')})
         self.fields['last_name'].widget.attrs.update({'placeholder': ('Nazwisko')})
         self.fields['email'].widget.attrs.update({'placeholder': ('Email')})
+        self.fields['phone'].widget.attrs.update({'placeholder': ('Numer telefonu')})
+        self.fields['city'].widget.attrs.update({'placeholder': ('Miasto')})
+        self.fields['street'].widget.attrs.update({'placeholder': ('Ulica')})
+        self.fields['postcode'].widget.attrs.update({'placeholder': ('Kod pocztowy')})
         self.fields['password1'].widget.attrs.update({'placeholder': ('Hasło')})
         self.fields['password2'].widget.attrs.update({'placeholder': ('Powtórz hasło')})
+        self.fields['phone'].label = "Numer telefonu"
+        self.fields['city'].label = "Miasto"
+        self.fields['street'].label = "Ulica"
+        self.fields['postcode'].label = "Kod pocztowy"
 
 
 class CustomUserChangeForm(UserChangeForm):

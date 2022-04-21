@@ -1,7 +1,8 @@
-from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from timetable.managers import UserManager
 
 
 # class User(models.Model):
@@ -27,10 +28,10 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    phone = models.IntegerField()
-    city = models.CharField(max_length=64, blank=True, null=True)
-    street = models.CharField(max_length=128, blank=True, null=True)
-    postcode = models.CharField(max_length=6, blank=True, null=True)
+    phone = models.CharField(max_length=15, blank=True)
+    city = models.CharField(max_length=64, blank=True)
+    street = models.CharField(max_length=128, blank=True)
+    postcode = models.CharField(max_length=6, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
