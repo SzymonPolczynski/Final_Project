@@ -6,9 +6,9 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, UpdateView, FormView
 
-from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm, AddUserReservationForm, LoginForm, SignUpForm
+from timetable.forms import AddUserForm, AddEmployeeForm, AddTeamForm, AddUserReservationForm, LoginForm, SignUpForm, \
+    AddServiceForm
 from timetable.models import CustomUser, Employee, Team, Services, Reservation
-
 
 
 class MainPageView(View):
@@ -218,6 +218,40 @@ class AllUserReservationsView(LoginRequiredMixin, View):
         accepted_reservations = Reservation.objects.filter(customer=user, is_accepted=True)
         return render(request, "user_reservations_details.html", {"reservations": reservations,
                                                                   "accepted_reservations": accepted_reservations})
+
+
+class AddServiceView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "is_staff"
+
+    def get(self, request):
+        form = AddServiceForm
+        return render(request, "create_service.html", {"form": form})
+
+    def post(self, request):
+        form = AddServiceForm(request.POST)
+        if form.is_valid():
+            service_name = form.cleaned_data["service_name"]
+            Services.objects.create(service_name=service_name)
+            return redirect("/all-services/")
+        return render(request, "create_service.html", {"form": form})
+
+
+class DeleteServiceView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    permission_required = "is_staff"
+
+    def get(self, request, service_id):
+        service = Services.objects.get(pk=service_id)
+        message = "Usunięto usługę z bazy danych"
+        service.delete()
+        return render(request, "message.html", {"message": message})
+
+
+class AllServicesView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+    permission_required = "is_staff"
+    template_name = "all_services.html"
+
+    def get_context_data(self):
+        return {"services": Services.objects.all()}
 
 
 class LoginView(View):

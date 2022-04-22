@@ -40,6 +40,9 @@ from timetable.views import (
     LoginView,
     LogoutView,
     AllUserReservationsView,
+    AddServiceView,
+    DeleteServiceView,
+    AllServicesView,
 )
 
 urlpatterns = [
@@ -71,4 +74,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name="login"),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('user/<int:user_id>/reservations/', AllUserReservationsView.as_view(), name="user-reservations"),
+    path('add-service/', AddServiceView.as_view(), name="add-service"),
+    path('service/delete/<int:service_id>/', DeleteServiceView.as_view(), name="delete-service"),
+    path('all-services/', AllServicesView.as_view(), name="all-services"),
 ]

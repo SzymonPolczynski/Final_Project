@@ -38,6 +38,10 @@ class AddUserReservationForm(forms.ModelForm):
                                                          'type': 'date'})}
 
 
+class AddServiceForm(forms.Form):
+    service_name = forms.CharField(label="Rodzaj usługi", max_length=128)
+
+
 class LoginForm(forms.Form):
     username = forms.EmailField(label="Adres email", max_length=64)
     password = forms.CharField(
