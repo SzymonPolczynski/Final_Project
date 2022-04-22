@@ -28,10 +28,10 @@ from timetable.managers import UserManager
 class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    phone = models.CharField(max_length=15, blank=True)
-    city = models.CharField(max_length=64, blank=True)
-    street = models.CharField(max_length=128, blank=True)
-    postcode = models.CharField(max_length=6, blank=True)
+    phone = models.CharField(max_length=15, blank=True, verbose_name=_('Numer telefonu'))
+    city = models.CharField(max_length=64, blank=True, verbose_name=_('Miasto'))
+    street = models.CharField(max_length=128, blank=True, verbose_name=_('Ulica'))
+    postcode = models.CharField(max_length=6, blank=True, verbose_name=_('Kod pocztowy'))
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -57,9 +57,9 @@ class CustomUser(AbstractUser):
 
 class Employee(models.Model):
     JOBS = (("Chief", "Brygadzista"), ("Handyman", "Pracownik fizyczny"))
-    employee_name = models.CharField(max_length=64)
-    employee_surname = models.CharField(max_length=64)
-    job = models.CharField(max_length=8, choices=JOBS)
+    employee_name = models.CharField(max_length=64, verbose_name=_('Imię'))
+    employee_surname = models.CharField(max_length=64, verbose_name=_('Nazwisko'))
+    job = models.CharField(max_length=8, choices=JOBS, verbose_name=_('Funkcja'))
 
     @property
     def name(self):
@@ -73,8 +73,8 @@ class Employee(models.Model):
 
 
 class Team(models.Model):
-    team_name = models.CharField(max_length=64)
-    employees = models.ManyToManyField(Employee)
+    team_name = models.CharField(max_length=64, verbose_name=_('Nazwa zespołu'))
+    employees = models.ManyToManyField(Employee, verbose_name=_('Pracownicy'))
 
     def __str__(self):
         return self.team_name
@@ -84,19 +84,19 @@ class Team(models.Model):
 
 
 class Services(models.Model):
-    service_name = models.CharField(max_length=128)
+    service_name = models.CharField(max_length=128, verbose_name=_('Nazwa usługi'))
 
     def __str__(self):
         return self.service_name
 
 
 class Reservation(models.Model):
-    customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    teams = models.ManyToManyField(Team)
-    target_date = models.DateField()
-    comments = models.TextField(null=True)
-    is_accepted = models.BooleanField(default=False)
-    service_type = models.ForeignKey(Services, on_delete=models.CASCADE)
+    customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name=_('Klient'))
+    teams = models.ManyToManyField(Team, verbose_name=_('Ekipa'))
+    target_date = models.DateField(verbose_name=_('Termin wykonania'))
+    comments = models.TextField(null=True, verbose_name=_('Uwagi'))
+    is_accepted = models.BooleanField(default=False, verbose_name=_('Zaakceptowano'))
+    service_type = models.ForeignKey(Services, on_delete=models.CASCADE, verbose_name=_('Rodzaj usługi'))
 
     def get_absolute_url(self):
         return reverse('reservation-details', kwargs={'reservation_id': self.pk})
