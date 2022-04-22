@@ -43,6 +43,7 @@ from timetable.views import (
     AddServiceView,
     DeleteServiceView,
     AllServicesView,
+    CheckReservationView,
 )
 
 urlpatterns = [
@@ -77,4 +78,5 @@ urlpatterns = [
     path('add-service/', AddServiceView.as_view(), name="add-service"),
     path('service/delete/<int:service_id>/', DeleteServiceView.as_view(), name="delete-service"),
     path('all-services/', AllServicesView.as_view(), name="all-services"),
+    path('reservation/<str:date>/<int:service>', CheckReservationView.as_view(), name="check-reservation"),
 ]

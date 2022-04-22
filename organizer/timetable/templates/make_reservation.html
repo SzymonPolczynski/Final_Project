@@ -3,10 +3,12 @@
 {% block content %}
     <p>
         Dodaj Rezerwacje
+    </p>
+    <p id="message" style="color: red"></p>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Dodaj">
     </form>
-    </p>
+    <script src="/static/scripts.js"></script>
 {% endblock %}

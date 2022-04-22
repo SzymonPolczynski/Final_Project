@@ -32,10 +32,11 @@ class AddTeamForm(forms.Form):
 class AddUserReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
-        fields = ["target_date", "comments", "service_type"]
+        fields = ["service_type", "target_date", "comments"]
         widgets = {'target_date': forms.DateInput(format='%m/%d/%Y',
                                                   attrs={'class': 'form-control', 'placeholder': 'Select a date',
-                                                         'type': 'date'})}
+                                                         'type': 'date',
+                                                         "style": "width:20%"})}
 
 
 class AddServiceForm(forms.Form):

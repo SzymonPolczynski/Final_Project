@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
@@ -252,6 +252,16 @@ class AllServicesView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView)
 
     def get_context_data(self):
         return {"services": Services.objects.all()}
+
+
+class CheckReservationView(View):
+    def get(self, request, date, service):
+        service_obj = Services.objects.get(pk=service)
+        reservation = Reservation.objects.filter(target_date=date, service_type=service_obj)
+        if reservation:
+            return JsonResponse({"is_available": False})
+        else:
+            return JsonResponse({"is_available": True})
 
 
 class LoginView(View):
