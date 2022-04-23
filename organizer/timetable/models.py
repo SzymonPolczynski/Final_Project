@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import constraints
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from timetable.managers import UserManager
@@ -27,13 +28,17 @@ from timetable.managers import UserManager
 
 class CustomUser(AbstractUser):
     username = None
-    email = models.EmailField(_('email address'), unique=True)
-    phone = models.CharField(max_length=15, blank=True, verbose_name=_('Numer telefonu'))
-    city = models.CharField(max_length=64, blank=True, verbose_name=_('Miasto'))
-    street = models.CharField(max_length=128, blank=True, verbose_name=_('Ulica'))
-    postcode = models.CharField(max_length=6, blank=True, verbose_name=_('Kod pocztowy'))
+    email = models.EmailField(_("email address"), unique=True)
+    phone = models.CharField(
+        max_length=15, blank=True, verbose_name=_("Numer telefonu")
+    )
+    city = models.CharField(max_length=64, blank=True, verbose_name=_("Miasto"))
+    street = models.CharField(max_length=128, blank=True, verbose_name=_("Ulica"))
+    postcode = models.CharField(
+        max_length=6, blank=True, verbose_name=_("Kod pocztowy")
+    )
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
@@ -46,7 +51,7 @@ class CustomUser(AbstractUser):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('user-details', kwargs={'user_id': self.pk})
+        return reverse("user-details", kwargs={"user_id": self.pk})
 
 
 # class TargetDate(models.Model):
@@ -57,9 +62,9 @@ class CustomUser(AbstractUser):
 
 class Employee(models.Model):
     JOBS = (("Chief", "Brygadzista"), ("Handyman", "Pracownik fizyczny"))
-    employee_name = models.CharField(max_length=64, verbose_name=_('Imię'))
-    employee_surname = models.CharField(max_length=64, verbose_name=_('Nazwisko'))
-    job = models.CharField(max_length=8, choices=JOBS, verbose_name=_('Funkcja'))
+    employee_name = models.CharField(max_length=64, verbose_name=_("Imię"))
+    employee_surname = models.CharField(max_length=64, verbose_name=_("Nazwisko"))
+    job = models.CharField(max_length=8, choices=JOBS, verbose_name=_("Funkcja"))
 
     @property
     def name(self):
@@ -69,37 +74,45 @@ class Employee(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('employee-details', kwargs={'employee_id': self.pk})
+        return reverse("employee-details", kwargs={"employee_id": self.pk})
 
 
 class Team(models.Model):
-    team_name = models.CharField(max_length=64, verbose_name=_('Nazwa zespołu'))
-    employees = models.ManyToManyField(Employee, verbose_name=_('Pracownicy'))
+    team_name = models.CharField(max_length=64, verbose_name=_("Nazwa zespołu"))
+    employees = models.ManyToManyField(Employee, verbose_name=_("Pracownicy"))
 
     def __str__(self):
         return self.team_name
 
     def get_absolute_url(self):
-        return reverse('team-details', kwargs={'team_id': self.pk})
+        return reverse("team-details", kwargs={"team_id": self.pk})
 
 
 class Services(models.Model):
-    service_name = models.CharField(max_length=128, verbose_name=_('Nazwa usługi'))
+    service_name = models.CharField(max_length=128, verbose_name=_("Nazwa usługi"))
 
     def __str__(self):
         return self.service_name
 
 
 class Reservation(models.Model):
-    customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name=_('Klient'))
-    teams = models.ManyToManyField(Team, verbose_name=_('Ekipa'))
-    target_date = models.DateField(verbose_name=_('Termin wykonania'))
-    comments = models.TextField(null=True, verbose_name=_('Uwagi'))
-    is_accepted = models.BooleanField(default=False, verbose_name=_('Zaakceptowano'))
-    service_type = models.ForeignKey(Services, on_delete=models.CASCADE, verbose_name=_('Rodzaj usługi'))
+    customer = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, verbose_name=_("Klient")
+    )
+    teams = models.ManyToManyField(Team, verbose_name=_("Ekipa"))
+    target_date = models.DateField(verbose_name=_("Termin wykonania"))
+    comments = models.TextField(null=True, verbose_name=_("Uwagi"))
+    is_accepted = models.BooleanField(default=False, verbose_name=_("Zaakceptowano"))
+    service_type = models.ForeignKey(
+        Services, on_delete=models.CASCADE, verbose_name=_("Rodzaj usługi")
+    )
 
     def get_absolute_url(self):
-        return reverse('reservation-details', kwargs={'reservation_id': self.pk})
+        return reverse("reservation-details", kwargs={"reservation_id": self.pk})
+
+    class Meta:
+        db_table = "timetable_reservation"
+        constraints = [models.UniqueConstraint(fields="target_date", name="unique date")]
 
 
 class Comments(models.Model):
