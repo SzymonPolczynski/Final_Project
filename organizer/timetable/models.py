@@ -1,6 +1,8 @@
+import datetime
+
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import constraints
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from timetable.managers import UserManager
@@ -100,19 +102,29 @@ class Reservation(models.Model):
         CustomUser, on_delete=models.CASCADE, verbose_name=_("Klient")
     )
     teams = models.ManyToManyField(Team, verbose_name=_("Ekipa"))
-    target_date = models.DateField(verbose_name=_("Termin wykonania"))
+    target_date = models.DateField(
+        verbose_name=_("Termin wykonania"),
+        validators=[MinValueValidator(datetime.date.today)],
+    )
     comments = models.TextField(null=True, verbose_name=_("Uwagi"))
     is_accepted = models.BooleanField(default=False, verbose_name=_("Zaakceptowano"))
     service_type = models.ForeignKey(
         Services, on_delete=models.CASCADE, verbose_name=_("Rodzaj usługi")
     )
 
+    def __str__(self):
+        return f"{self.customer} {self.target_date} {self.service_type}"
+
     def get_absolute_url(self):
         return reverse("reservation-details", kwargs={"reservation_id": self.pk})
 
     class Meta:
         db_table = "timetable_reservation"
-        constraints = [models.UniqueConstraint(fields="target_date", name="unique date")]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["target_date", "service_type"], name="unique service_date"
+            )
+        ]
 
 
 class Comments(models.Model):

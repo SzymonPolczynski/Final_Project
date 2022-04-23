@@ -24,8 +24,12 @@ commentBox.setAttribute("disabled", "");
 const dateTable = document.getElementById("id_target_date");
 dateTable.setAttribute("disabled", "");
 const message = document.getElementById("message");
-
 const serviceButton = document.getElementById("id_service_type")
+
+if (serviceButton.selectedIndex !== 0) {
+    dateTable.removeAttribute("disabled");
+    }
+
 serviceButton.addEventListener('change', (event) => {
     dateTable.value = null;
     message.innerText = "";
@@ -37,6 +41,7 @@ serviceButton.addEventListener('change', (event) => {
         dateTable.setAttribute("disabled", "");
     }
 });
+
 dateTable.addEventListener('change', (event) => {
     let dateId = dateTable.value;
     let serviceId = serviceButton.value;
